@@ -26,7 +26,7 @@
 # $ cat now.out
 
 # source shflags
-. ../src/shflags
+. /usr/lib/shflags
 
 # configure shflags
 DEFINE_boolean 'force' false 'force overwriting' 'f'

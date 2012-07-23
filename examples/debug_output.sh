@@ -17,7 +17,7 @@
 # $ ./debug_output.sh --debug sing
 
 # source shflags
-. ../src/shflags
+. /usr/lib/shflags
 
 # define flags
 DEFINE_boolean 'debug' false 'enable debug mode' 'd'

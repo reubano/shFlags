@@ -13,7 +13,7 @@
 # is output.
 
 # source shflags
-. ../src/shflags
+. /usr/lib/shflags
 
 # define a 'name' command-line string flag
 DEFINE_string 'name' 'world' 'name to say hello to' 'n'
