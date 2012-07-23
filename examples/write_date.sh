@@ -1,5 +1,5 @@
-#!/bin/sh
-#
+#!/usr/bin/env bash
+
 # Copyright 2008 Kate Ward. All Rights Reserved.
 # Released under the LGPL (GNU Lesser General Public License)
 #

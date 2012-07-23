@@ -70,7 +70,7 @@ sudo mv /usr/lib/shflags/examples/*.sh ~/bin
 Getting started with shFlags is quite easy. We'll start with the proverbial "Hello, world" example `~/bin/hello_world.sh`.
 
 ```ruby
-#!/bin/sh
+#!/usr/bin/env bash
 	
 # source shflags
 . /usr/lib/shflags
@@ -220,7 +220,7 @@ Unlike getopt, shFlags provides an automated means of generating help for the us
 The debug example `~/bin/debug_output.sh` sets up a debug flag that when specified will enable debug output to STDERR. If the flag is not specified (the default behavior), debug output is not enabled.
 
 ```ruby
-#!/bin/sh
+#!/usr/bin/env bash
 
 # source shflags
 . /usr/lib/shflags
@@ -243,7 +243,7 @@ echo 'something interesting'
 The write date example `~/bin/write_date.sh` will try to write the current date to a filename given on the command-line. If the file already exists, the script will fail, but if a `-f` (or `--force`) flag is given, the existing file will be overwritten.
 
 ```ruby
-#!/bin/sh
+#!/usr/bin/env bash
 
 # source shflags
 . /usr/lib/shflags
