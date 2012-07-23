@@ -66,8 +66,8 @@ sudo cp shFlags/src/shflags /usr/lib/shflags
 * Make example scripts executable and copy to `~/bin`
 
 ```
-sudo chmod +x shflags/examples/*.sh
-sudo cp shflags/examples/*.sh ~/bin
+chmod +x shflags/examples/*.sh
+cp shflags/examples/*.sh ~/bin
 ```
 
 ## Quick Start
