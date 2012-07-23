@@ -7,7 +7,7 @@ Shell Flags (shFlags) is a library written to greatly simplify the handling of c
 shFlags is a port of the google-gflags C++/Python library and has been tested on the following OSes:
 * [Linux (Ubuntu)](http://ubuntu.com/)
 * [Mac OS X 10.5](http://www.apple.com/macosx/)
-* [Solaris](http://www.sun.com/software/solaris/) 9, 10 
+* [Solaris 9, 10](http://www.sun.com/software/solaris/)
 
 shFlags has been tested on the following shells
 * [Bourne Shell](http://en.wikipedia.org/wiki/Bourne_shell) (sh)
@@ -23,8 +23,7 @@ shFlags has been tested on the following shells
 
 ## Mac OS X Preparation
 
-* Install [Macports](https://trac.macports.org/wiki/InstallingMacPorts) 
-
+* Install [Macports](https://trac.macports.org/wiki/InstallingMacPorts)
 * Check that Macports is installed
 
 ```
