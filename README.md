@@ -51,18 +51,24 @@ source ~/.profile
 
 ## Installation
 
+* Download shflags
+
+```
+cd ~/Downloads
+curl -fsSL https://github.com/reubano/shFlags/zipball/master | tar -xf -
+```
+
 * Copy shflags to `/usr/lib`
 
 ```
-cd /usr/lib
-sudo curl -fsSL https://github.com/reubano/shFlags/zipball/master | tar -xf -
+sudo cp shFlags/src/shflags /usr/lib/shflags
 ```
 
-* Make example scripts executable and move to `~/bin`
+* Make example scripts executable and copy to `~/bin`
 
 ```
-sudo chmod +x /usr/lib/shflags/examples/*.sh
-sudo mv /usr/lib/shflags/examples/*.sh ~/bin
+sudo chmod +x shflags/examples/*.sh
+sudo cp shflags/examples/*.sh ~/bin
 ```
 
 ## Quick Start
