@@ -676,20 +676,20 @@ _flags_parseGetopt()
 				fi
 				;;
 
-      -*)  # short option
-        _flags_opt_=`expr "${_flags_opt_}" : '-\(.*\)'`
-        _flags_len_=${__FLAGS_LEN_SHORT}
-        if _flags_itemInList "${_flags_opt_}" ${__flags_shortNames}; then
-          # yes. match short name to long name. note purposeful off-by-one
-          # (too high) with awk calculations.
-          _flags_pos_=`echo "${__flags_shortNames}" \
-              |awk 'BEGIN{RS=" ";rn=0}$0==e{rn=NR}END{print rn}' \
-                  e=${_flags_opt_}`
-          _flags_name_=`echo "${__flags_longNames}" \
-              |awk 'BEGIN{RS=" "}rn==NR{print $0}' rn="${_flags_pos_}"`
-        fi
-        ;;
-    esac
+			-*)	# short option
+				_flags_opt_=`expr "${_flags_opt_}" : '-\(.*\)'`
+				_flags_len_=${__FLAGS_LEN_SHORT}
+				if _flags_itemInList "${_flags_opt_}" ${__flags_shortNames}; then
+					# yes. match short name to long name. note purposeful off-by-one
+					# (too high) with awk calculations.
+					_flags_pos_=`echo "${__flags_shortNames}" \
+						|awk 'BEGIN{RS=" ";rn=0}$0==e{rn=NR}END{print rn}' \
+								e=${_flags_opt_}`
+					_flags_name_=`echo "${__flags_longNames}" \
+						|awk 'BEGIN{RS=" "}rn==NR{print $0}' rn="${_flags_pos_}"`
+				fi
+				;;
+		esac
 
     # die if the flag was unrecognized
     if [ -z "${_flags_name_}" ]; then
