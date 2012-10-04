@@ -347,37 +347,37 @@ _flags_define()
 #	 boolean: success of operation (always returns True)
 _flags_genOptStr()
 {
-  _flags_optStrType_=$1
+	_flags_optStrType_=$1
 
-  _flags_opts_=''
+	_flags_opts_=''
 
-  for _flags_flag_ in ${__flags_longNames}; do
-    _flags_type_=`_flags_getFlagInfo ${_flags_flag_} ${__FLAGS_INFO_TYPE}`
-    case ${_flags_optStrType_} in
-      ${__FLAGS_OPTSTR_SHORT})
-        _flags_shortName_=`_flags_getFlagInfo \
-            ${_flags_flag_} ${__FLAGS_INFO_SHORT}`
-        if [ "${_flags_shortName_}" != "${__FLAGS_NULL}" ]; then
-          _flags_opts_="${_flags_opts_}${_flags_shortName_}"
-          # getopt needs a trailing ':' to indicate a required argument
-          [ ${_flags_type_} -ne ${__FLAGS_TYPE_BOOLEAN} ] && \
-              _flags_opts_="${_flags_opts_}:"
-        fi
-        ;;
+	for _flags_flag_ in ${__flags_longNames}; do
+		_flags_type_=`_flags_getFlagInfo ${_flags_flag_} ${__FLAGS_INFO_TYPE}`
+		case ${_flags_optStrType_} in
+			${__FLAGS_OPTSTR_SHORT})
+				_flags_shortName_=`_flags_getFlagInfo \
+					${_flags_flag_} ${__FLAGS_INFO_SHORT}`
+				if [ "${_flags_shortName_}" != "${__FLAGS_NULL}" ]; then
+					_flags_opts_="${_flags_opts_}${_flags_shortName_}"
+					# getopt needs a trailing ':' to indicate a required argument
+					[ ${_flags_type_} -ne ${__FLAGS_TYPE_BOOLEAN} ] && \
+						_flags_opts_="${_flags_opts_}:"
+				fi
+				;;
 
-      ${__FLAGS_OPTSTR_LONG})
-        _flags_opts_="${_flags_opts_:+${_flags_opts_},}${_flags_flag_}"
-        # getopt needs a trailing ':' to indicate a required argument
-        [ ${_flags_type_} -ne ${__FLAGS_TYPE_BOOLEAN} ] && \
-            _flags_opts_="${_flags_opts_}:"
-        ;;
-    esac
-  done
+			${__FLAGS_OPTSTR_LONG})
+				_flags_opts_="${_flags_opts_:+${_flags_opts_},}${_flags_flag_}"
+				# getopt needs a trailing ':' to indicate a required argument
+				[ ${_flags_type_} -ne ${__FLAGS_TYPE_BOOLEAN} ] && \
+					_flags_opts_="${_flags_opts_}:"
+				;;
+		esac
+	done
 
-  echo "${_flags_opts_}"
-  unset _flags_flag_ _flags_opts_ _flags_optStrType_ _flags_shortName_ \
-      _flags_type_
-  return ${FLAGS_TRUE}
+	echo "${_flags_opts_}"
+	unset _flags_flag_ _flags_opts_ _flags_optStrType_ _flags_shortName_ \
+		_flags_type_
+	return ${FLAGS_TRUE}
 }
 
 # Returns flag details based on a flag name and flag info.
