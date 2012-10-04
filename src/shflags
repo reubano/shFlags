@@ -712,7 +712,7 @@ _flags_parseGetopt()
 					fi
 				else
 					_flags_strToEval_="_flags_val_=\
-						\${__flags_${_flags_name_}_${__FLAGS_INFO_DEFAULT}}"
+\${__flags_${_flags_name_}_${__FLAGS_INFO_DEFAULT}}"
 					eval "${_flags_strToEval_}"
 					if [ ${_flags_val_} -eq ${FLAGS_FALSE} ]; then
 						eval "FLAGS_${_flags_name_}=${FLAGS_TRUE}"
