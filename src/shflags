@@ -212,126 +212,126 @@ __flags_opts=''			# temporary storage for parsed getopt flags
 #	 integer: success of operation, or error
 _flags_define()
 {
-  if [ $# -lt 4 ]; then
-    flags_error='DEFINE error: too few arguments'
-    flags_return=${FLAGS_ERROR}
-    _flags_error "${flags_error}"
-    return ${flags_return}
-  fi
+	if [ $# -lt 4 ]; then
+		flags_error='DEFINE error: too few arguments'
+		flags_return=${FLAGS_ERROR}
+		_flags_error "${flags_error}"
+		return ${flags_return}
+	fi
 
-  _flags_type_=$1
-  _flags_name_=$2
-  _flags_default_=$3
-  _flags_help_=$4
-  _flags_short_=${5:-${__FLAGS_NULL}}
+	_flags_type_=$1
+	_flags_name_=$2
+	_flags_default_=$3
+	_flags_help_=$4
+	_flags_short_=${5:-${__FLAGS_NULL}}
 
-  _flags_return_=${FLAGS_TRUE}
+	_flags_return_=${FLAGS_TRUE}
 
-  # TODO(kward): check for validity of the flag name (e.g. dashes)
+	# TODO(kward): check for validity of the flag name (e.g. dashes)
 
-  # check whether the flag name is reserved
-  echo " ${FLAGS_RESERVED} " |grep " ${_flags_name_} " >/dev/null
-  if [ $? -eq 0 ]; then
-    flags_error="flag name (${_flags_name_}) is reserved"
-    _flags_return_=${FLAGS_ERROR}
-  fi
+	# check whether the flag name is reserved
+	echo " ${FLAGS_RESERVED} " |grep " ${_flags_name_} " >/dev/null
+	if [ $? -eq 0 ]; then
+		flags_error="flag name (${_flags_name_}) is reserved"
+		_flags_return_=${FLAGS_ERROR}
+	fi
 
-  # require short option for getopt that don't support long options
-  if [ ${_flags_return_} -eq ${FLAGS_TRUE} \
-      -a ${__FLAGS_GETOPT_VERS} -ne ${__FLAGS_GETOPT_VERS_ENH} \
-      -a "${_flags_short_}" = "${__FLAGS_NULL}" ]
-  then
-    flags_error="short flag required for (${_flags_name_}) on this platform"
-    _flags_return_=${FLAGS_ERROR}
-  fi
+	# require short option for getopt that don't support long options
+	if [ ${_flags_return_} -eq ${FLAGS_TRUE} \
+		-a ${__FLAGS_GETOPT_VERS} -ne ${__FLAGS_GETOPT_VERS_ENH} \
+		-a "${_flags_short_}" = "${__FLAGS_NULL}" ]
+	then
+		flags_error="short flag required for (${_flags_name_}) on this platform"
+		_flags_return_=${FLAGS_ERROR}
+	fi
 
-  # check for existing long name definition
-  if [ ${_flags_return_} -eq ${FLAGS_TRUE} ]; then
-    if _flags_itemInList "${_flags_name_}" \
-        ${__flags_longNames} ${__flags_boolNames}
-    then
-      flags_error="flag name ([no]${_flags_name_}) already defined"
-      _flags_warn "${flags_error}"
-      _flags_return_=${FLAGS_FALSE}
-    fi
-  fi
+	# check for existing long name definition
+	if [ ${_flags_return_} -eq ${FLAGS_TRUE} ]; then
+		if _flags_itemInList "${_flags_name_}" \
+			${__flags_longNames} ${__flags_boolNames}
+		then
+			flags_error="flag name ([no]${_flags_name_}) already defined"
+			_flags_warn "${flags_error}"
+			_flags_return_=${FLAGS_FALSE}
+		fi
+	fi
 
-  # check for existing short name definition
-  if [ ${_flags_return_} -eq ${FLAGS_TRUE} \
-      -a "${_flags_short_}" != "${__FLAGS_NULL}" ]
-  then
-    if _flags_itemInList "${_flags_short_}" ${__flags_shortNames}; then
-      flags_error="flag short name (${_flags_short_}) already defined"
-      _flags_warn "${flags_error}"
-      _flags_return_=${FLAGS_FALSE}
-    fi
-  fi
+	# check for existing short name definition
+	if [ ${_flags_return_} -eq ${FLAGS_TRUE} \
+		-a "${_flags_short_}" != "${__FLAGS_NULL}" ]
+	then
+		if _flags_itemInList "${_flags_short_}" ${__flags_shortNames}; then
+			flags_error="flag short name (${_flags_short_}) already defined"
+			_flags_warn "${flags_error}"
+			_flags_return_=${FLAGS_FALSE}
+		fi
+	fi
 
-  # handle default value. note, on several occasions the 'if' portion of an
-  # if/then/else contains just a ':' which does nothing. a binary reversal via
-  # '!' is not done because it does not work on all shells.
-  if [ ${_flags_return_} -eq ${FLAGS_TRUE} ]; then
-    case ${_flags_type_} in
-      ${__FLAGS_TYPE_BOOLEAN})
-        if _flags_validateBoolean "${_flags_default_}"; then
-          case ${_flags_default_} in
-            true|t|0) _flags_default_=${FLAGS_TRUE} ;;
-            false|f|1) _flags_default_=${FLAGS_FALSE} ;;
-          esac
-        else
-          flags_error="invalid default flag value '${_flags_default_}'"
-          _flags_return_=${FLAGS_ERROR}
-        fi
-        ;;
+	# handle default value. note, on several occasions the 'if' portion of an
+	# if/then/else contains just a ':' which does nothing. a binary reversal via
+	# '!' is not done because it does not work on all shells.
+	if [ ${_flags_return_} -eq ${FLAGS_TRUE} ]; then
+		case ${_flags_type_} in
+			${__FLAGS_TYPE_BOOLEAN})
+				if _flags_validateBoolean "${_flags_default_}"; then
+					case ${_flags_default_} in
+						true|t|0) _flags_default_=${FLAGS_TRUE} ;;
+						false|f|1) _flags_default_=${FLAGS_FALSE} ;;
+					esac
+				else
+					flags_error="invalid default flag value '${_flags_default_}'"
+					_flags_return_=${FLAGS_ERROR}
+				fi
+				;;
 
-      ${__FLAGS_TYPE_FLOAT})
-        if _flags_validateFloat "${_flags_default_}"; then
-          :
-        else
-          flags_error="invalid default flag value '${_flags_default_}'"
-          _flags_return_=${FLAGS_ERROR}
-        fi
-        ;;
+			${__FLAGS_TYPE_FLOAT})
+				if _flags_validateFloat "${_flags_default_}"; then
+					:
+				else
+					flags_error="invalid default flag value '${_flags_default_}'"
+					_flags_return_=${FLAGS_ERROR}
+				fi
+				;;
 
-      ${__FLAGS_TYPE_INTEGER})
-        if _flags_validateInteger "${_flags_default_}"; then
-          :
-        else
-          flags_error="invalid default flag value '${_flags_default_}'"
-          _flags_return_=${FLAGS_ERROR}
-        fi
-        ;;
+			${__FLAGS_TYPE_INTEGER})
+				if _flags_validateInteger "${_flags_default_}"; then
+					:
+				else
+					flags_error="invalid default flag value '${_flags_default_}'"
+					_flags_return_=${FLAGS_ERROR}
+				fi
+				;;
 
-      ${__FLAGS_TYPE_STRING}) ;;  # everything in shell is a valid string
+			${__FLAGS_TYPE_STRING}) ;;	# everything in shell is a valid string
 
-      *)
-        flags_error="unrecognized flag type '${_flags_type_}'"
-        _flags_return_=${FLAGS_ERROR}
-        ;;
-    esac
-  fi
+			*)
+				flags_error="unrecognized flag type '${_flags_type_}'"
+				_flags_return_=${FLAGS_ERROR}
+				;;
+		esac
+	fi
 
-  if [ ${_flags_return_} -eq ${FLAGS_TRUE} ]; then
-    # store flag information
-    eval "FLAGS_${_flags_name_}='${_flags_default_}'"
-    eval "__flags_${_flags_name_}_${__FLAGS_INFO_TYPE}=${_flags_type_}"
-    eval "__flags_${_flags_name_}_${__FLAGS_INFO_DEFAULT}=\
+	if [ ${_flags_return_} -eq ${FLAGS_TRUE} ]; then
+		# store flag information
+		eval "FLAGS_${_flags_name_}='${_flags_default_}'"
+		eval "__flags_${_flags_name_}_${__FLAGS_INFO_TYPE}=${_flags_type_}"
+		eval "__flags_${_flags_name_}_${__FLAGS_INFO_DEFAULT}=\
 \"${_flags_default_}\""
-    eval "__flags_${_flags_name_}_${__FLAGS_INFO_HELP}=\"${_flags_help_}\""
-    eval "__flags_${_flags_name_}_${__FLAGS_INFO_SHORT}='${_flags_short_}'"
+		eval "__flags_${_flags_name_}_${__FLAGS_INFO_HELP}=\"${_flags_help_}\""
+		eval "__flags_${_flags_name_}_${__FLAGS_INFO_SHORT}='${_flags_short_}'"
 
-    # append flag name(s) to list of names
-    __flags_longNames="${__flags_longNames}${_flags_name_} "
-    __flags_shortNames="${__flags_shortNames}${_flags_short_} "
-    [ ${_flags_type_} -eq ${__FLAGS_TYPE_BOOLEAN} ] && \
-        __flags_boolNames="${__flags_boolNames}no${_flags_name_} "
-  fi
+		# append flag name(s) to list of names
+		__flags_longNames="${__flags_longNames}${_flags_name_} "
+		__flags_shortNames="${__flags_shortNames}${_flags_short_} "
+		[ ${_flags_type_} -eq ${__FLAGS_TYPE_BOOLEAN} ] && \
+			__flags_boolNames="${__flags_boolNames}no${_flags_name_} "
+	fi
 
-  flags_return=${_flags_return_}
-  unset _flags_default_ _flags_help_ _flags_name_ _flags_return_ _flags_short_ \
-      _flags_type_
-  [ ${flags_return} -eq ${FLAGS_ERROR} ] && _flags_error "${flags_error}"
-  return ${flags_return}
+	flags_return=${_flags_return_}
+	unset _flags_default_ _flags_help_ _flags_name_ _flags_return_ _flags_short_ \
+		_flags_type_
+	[ ${flags_return} -eq ${FLAGS_ERROR} ] && _flags_error "${flags_error}"
+	return ${flags_return}
 }
 
 # Return valid getopt options using currently defined list of long options.
