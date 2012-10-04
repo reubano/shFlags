@@ -643,38 +643,38 @@ _flags_parseGetopt()
 		eval set -- "$@"
 	fi
 
-  # provide user with number of arguments to shift by later
-  # NOTE: the FLAGS_ARGC variable is obsolete as of 1.0.3 because it does not
-  # properly give user access to non-flag arguments mixed in between flag
-  # arguments. Its usage was replaced by FLAGS_ARGV, and it is being kept only
-  # for backwards compatibility reasons.
-  FLAGS_ARGC=`expr $# - 1 - ${_flags_argc_}`
+	# provide user with number of arguments to shift by later
+	# NOTE: the FLAGS_ARGC variable is obsolete as of 1.0.3 because it does not
+	# properly give user access to non-flag arguments mixed in between flag
+	# arguments. Its usage was replaced by FLAGS_ARGV, and it is being kept only
+	# for backwards compatibility reasons.
+	FLAGS_ARGC=`expr $# - 1 - ${_flags_argc_}`
 
-  # handle options. note options with values must do an additional shift
-  while true; do
-    _flags_opt_=$1
-    _flags_arg_=${2:-}
-    _flags_type_=${__FLAGS_TYPE_NONE}
-    _flags_name_=''
+	# handle options. note options with values must do an additional shift
+	while true; do
+		_flags_opt_=$1
+		_flags_arg_=${2:-}
+		_flags_type_=${__FLAGS_TYPE_NONE}
+		_flags_name_=''
 
-    # determine long flag name
-    case "${_flags_opt_}" in
-      --) shift; break ;;  # discontinue option parsing
+		# determine long flag name
+		case "${_flags_opt_}" in
+			--) shift; break ;;	# discontinue option parsing
 
-      --*)  # long option
-        _flags_opt_=`expr "${_flags_opt_}" : '--\(.*\)'`
-        _flags_len_=${__FLAGS_LEN_LONG}
-        if _flags_itemInList "${_flags_opt_}" ${__flags_longNames}; then
-          _flags_name_=${_flags_opt_}
-        else
-          # check for negated long boolean version
-          if _flags_itemInList "${_flags_opt_}" ${__flags_boolNames}; then
-            _flags_name_=`expr "${_flags_opt_}" : 'no\(.*\)'`
-            _flags_type_=${__FLAGS_TYPE_BOOLEAN}
-            _flags_arg_=${__FLAGS_NULL}
-          fi
-        fi
-        ;;
+			--*)	# long option
+				_flags_opt_=`expr "${_flags_opt_}" : '--\(.*\)'`
+				_flags_len_=${__FLAGS_LEN_LONG}
+				if _flags_itemInList "${_flags_opt_}" ${__flags_longNames}; then
+					_flags_name_=${_flags_opt_}
+				else
+					# check for negated long boolean version
+					if _flags_itemInList "${_flags_opt_}" ${__flags_boolNames}; then
+						_flags_name_=`expr "${_flags_opt_}" : 'no\(.*\)'`
+						_flags_type_=${__FLAGS_TYPE_BOOLEAN}
+						_flags_arg_=${__FLAGS_NULL}
+					fi
+				fi
+				;;
 
       -*)  # short option
         _flags_opt_=`expr "${_flags_opt_}" : '-\(.*\)'`
