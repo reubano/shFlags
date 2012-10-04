@@ -74,7 +74,7 @@ cp shflags/examples/*.sh ~/bin
 
 Getting started with shFlags is quite easy. We'll start with the proverbial "Hello, world" example `~/bin/hello_world.sh`.
 
-```ruby
+```shell
 #!/usr/bin/env bash
 	
 # source shflags
@@ -101,14 +101,14 @@ _Output_
 
 So what just happened? Let's go through the script line-by-line.
 
-```ruby
+```shell
 # source shflags
 . /usr/lib/shflags
 ```
 
 This line sources the shflags library into the current shell environment. It brings in several functions and sets several variables, but you won't actually see output from this line.
 
-```ruby
+```shell
 # define a 'name' command-line string flag
 DEFINE_string 'name' 'world' 'name to say hello to' 'n'
 ```
@@ -123,7 +123,7 @@ Here we have defined a 'string' flag called name, we gave it a default value of 
 
 Wow. That's a lot. Let's keep going.
 
-```ruby
+```shell
 # parse the command-line
 FLAGS "$@" || exit 1
 eval set -- "${FLAGS_ARGV}"
@@ -133,7 +133,7 @@ Here is where all the magic happens. The call to `FLAGS` with the passing of `"$
 
 There is actually a lot that happened with this `FLAGS` call, but the basic action you will be interested in right now is that a `FLAGS_name` variable was defined. As we didn't pass the `-n` flag (or `--name`) on the command-line, the value placed in the variable is `world`, the default value specified when we defined the flag.
 
-```ruby
+```shell
 # say Hello!
 echo "Hello, ${FLAGS_name}!"
 ```
@@ -179,7 +179,7 @@ There you have it. A list of all the command line options supported in a nice cl
 
 The actual flag parsing step looks deceptively simple, but at the same time confusing.
 
-```ruby
+```shell
 FLAGS "$@" || exit 1
 eval set -- "${FLAGS_ARGV}"
 ```
@@ -224,7 +224,7 @@ Unlike getopt, shFlags provides an automated means of generating help for the us
 
 The debug example `~/bin/debug_output.sh` sets up a debug flag that when specified will enable debug output to STDERR. If the flag is not specified (the default behavior), debug output is not enabled.
 
-```ruby
+```shell
 #!/usr/bin/env bash
 
 # source shflags
@@ -247,7 +247,7 @@ echo 'something interesting'
 
 The write date example `~/bin/write_date.sh` will try to write the current date to a filename given on the command-line. If the file already exists, the script will fail, but if a `-f` (or `--force`) flag is given, the existing file will be overwritten.
 
-```ruby
+```shell
 #!/usr/bin/env bash
 
 # source shflags
