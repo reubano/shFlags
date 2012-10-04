@@ -631,17 +631,17 @@ _flags_getoptEnhanced()
 #	 integer: a FLAGS success condition
 _flags_parseGetopt()
 {
-  _flags_argc_=$1
-  shift
+	_flags_argc_=$1
+	shift
 
-  flags_return=${FLAGS_TRUE}
+	flags_return=${FLAGS_TRUE}
 
-  if [ ${__FLAGS_GETOPT_VERS} -ne ${__FLAGS_GETOPT_VERS_ENH} ]; then
-    set -- $@
-  else
-    # note the quotes around the `$@' -- they are essential!
-    eval set -- "$@"
-  fi
+	if [ ${__FLAGS_GETOPT_VERS} -ne ${__FLAGS_GETOPT_VERS_ENH} ]; then
+		set -- $@
+	else
+		# note the quotes around the '$@' -- they are essential!
+		eval set -- "$@"
+	fi
 
   # provide user with number of arguments to shift by later
   # NOTE: the FLAGS_ARGC variable is obsolete as of 1.0.3 because it does not
