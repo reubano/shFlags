@@ -17,11 +17,11 @@ shFlags has been tested on the following shells
 * [the Public Domain Korn Shell](http://web.cs.mun.ca/%7Emichael/pdksh/) (pdksh)
 * [Zsh](http://www.zsh.org) (zsh)
 
-## Requirements
+## Requirements (for long option names)
 
 * [GNU getopt(1)](http://linux.die.net/man/1/getopt)
 
-## Mac OS X Preparation
+## Preparation for Mac OS X (you can skip if you don't require long option names)
 
 * Install [Macports](https://trac.macports.org/wiki/InstallingMacPorts)
 * Check that Macports is installed
@@ -95,7 +95,7 @@ Go ahead and give the script a run.
 
 	hello_world.sh
 
-Output
+_Output_
 
 	Hello, world!
 
@@ -144,7 +144,7 @@ Let's give the script another go, this time passing `-n Kate` on the command-lin
 	
 	hello_world.sh -n Kate
 	
-Output
+_Output_
 	
 	Hello, Kate!
 
@@ -154,7 +154,7 @@ What about spaces in the flag value? Give it a try! (**Note: this requires the e
 	
 	hello_world.sh --name 'Kate Ward'
 	
-Output
+_Output_
 
 	Hello, Kate Ward!
 
@@ -164,7 +164,7 @@ What happens if you can't remember the command-line flags you have defined, and 
 
 	hello_world.sh -h
 	
-Output
+_Output_
 
 	USAGE: hello_world.sh [flags] args
 	flags:
@@ -300,7 +300,7 @@ Let's take a look at the exit code
 
 	echo $?
 
-Output
+_Output_
 
 	1
 
@@ -309,7 +309,7 @@ This should create the file just fine.
 	write_date.sh junk.dat
 	cat junk.dat
 
-Output
+_Output_
 
 	Thu Jun 26 23:06:34 IST 2008
 
@@ -317,7 +317,7 @@ This should fail with an error.
 
 	write_date.sh junk.dat
 
-Output
+_Output_
 
 	warning: filename exists; not overwriting
 
@@ -325,7 +325,7 @@ Now let's take a look at this exit code
 
 	echo $?
 
-Output
+_Output_
 
 	2
 
@@ -334,7 +334,7 @@ This succeeds because we pass the `-f` flag.
 	write_date.sh -f junk.dat
 	cat junk.dat
 
-Output
+_Output_
 
 	Thu Jun 26 23:10:02 IST 2008
 
