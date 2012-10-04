@@ -12,43 +12,43 @@
 # This module implements something like the google-gflags library available
 # from http://code.google.com/p/google-gflags/.
 #
-# FLAG TYPES: This is a list of the DEFINE_*'s that you can do.  All flags take
+# FLAG TYPES: This is a list of the DEFINE_*'s that you can do. All flags take
 # a name, default value, help-string, and optional 'short' name (one-letter
-# name).  Some flags have other arguments, which are described with the flag.
+# name). Some flags have other arguments, which are described with the flag.
 #
 # DEFINE_string: takes any input, and intreprets it as a string.
 #
 # DEFINE_boolean: typically does not take any argument: say --myflag to set
-#   FLAGS_myflag to true, or --nomyflag to set FLAGS_myflag to false.
-#   Alternately, you can say
-#     --myflag=true  or --myflag=t or --myflag=0  or
-#     --myflag=false or --myflag=f or --myflag=1
-#   Passing an option has the same affect as passing the option once.
+#	 FLAGS_myflag to true, or --nomyflag to set FLAGS_myflag to false.
+#	 Alternately, you can say
+#		 --myflag=true	or --myflag=t or --myflag=0	or
+#		 --myflag=false or --myflag=f or --myflag=1
+#	 Passing an option has the same affect as passing the option once.
 #
 # DEFINE_float: takes an input and intreprets it as a floating point number. As
-#   shell does not support floats per-se, the input is merely validated as
-#   being a valid floating point value.
+#	 shell does not support floats per-se, the input is merely validated as
+#	 being a valid floating point value.
 #
 # DEFINE_integer: takes an input and intreprets it as an integer.
 #
 # SPECIAL FLAGS: There are a few flags that have special meaning:
-#   --help (or -?)  prints a list of all the flags in a human-readable fashion
-#   --flagfile=foo  read flags from foo.  (not implemented yet)
-#   --              as in getopt(), terminates flag-processing
+#	 --help (or -?)	prints a list of all the flags in a human-readable fashion
+#	 --flagfile=foo	read flags from foo.	(not implemented yet)
+#	 --							as in getopt(), terminates flag-processing
 #
 # EXAMPLE USAGE:
 #
-#   -- begin hello.sh --
-#   #! /bin/sh
-#   . ./shflags
-#   DEFINE_string name 'world' "somebody's name" n
-#   FLAGS "$@" || exit $?
-#   eval set -- "${FLAGS_ARGV}"
-#   echo "Hello, ${FLAGS_name}."
-#   -- end hello.sh --
+#	 -- begin hello.sh --
+#	 #! /bin/sh
+#	 . ./shflags
+#	 DEFINE_string name 'world' "somebody's name" n
+#	 FLAGS "$@" || exit $?
+#	 eval set -- "${FLAGS_ARGV}"
+#	 echo "Hello, ${FLAGS_name}."
+#	 -- end hello.sh --
 #
-#   $ ./hello.sh -n Kate
-#   Hello, Kate.
+#	 $ ./hello.sh -n Kate
+#	 Hello, Kate.
 #
 # NOTE: Not all systems include a getopt version that supports long flags. On
 # these systems, only short flags are recognized.
@@ -57,21 +57,21 @@
 # shFlags
 #
 # Shared attributes:
-#   flags_error: last error message
-#   flags_return: last return value
+#	 flags_error: last error message
+#	 flags_return: last return value
 #
-#   __flags_longNames: list of long names for all flags
-#   __flags_shortNames: list of short names for all flags
-#   __flags_boolNames: list of boolean flag names
+#	 __flags_longNames: list of long names for all flags
+#	 __flags_shortNames: list of short names for all flags
+#	 __flags_boolNames: list of boolean flag names
 #
-#   __flags_opts: options parsed by getopt
+#	 __flags_opts: options parsed by getopt
 #
 # Per-flag attributes:
-#   FLAGS_<flag_name>: contains value of flag named 'flag_name'
-#   __flags_<flag_name>_default: the default flag value
-#   __flags_<flag_name>_help: the flag help string
-#   __flags_<flag_name>_short: the flag short name
-#   __flags_<flag_name>_type: the flag type
+#	 FLAGS_<flag_name>: contains value of flag named 'flag_name'
+#	 __flags_<flag_name>_default: the default flag value
+#	 __flags_<flag_name>_help: the flag help string
+#	 __flags_<flag_name>_short: the flag short name
+#	 __flags_<flag_name>_type: the flag type
 #
 # Notes:
 # - lists of strings are space separated, and a null value is the '~' char.
@@ -180,12 +180,11 @@ unset __flags_const __flags_constants
 # internal variables
 #
 
-__flags_boolNames=' '  # space separated list of boolean flag names
-__flags_longNames=' '  # space separated list of long flag names
-__flags_shortNames=' '  # space separated list of short flag names
-
-__flags_columns=''  # screen width in columns
-__flags_opts=''  # temporary storage for parsed getopt flags
+__flags_boolNames=' '	# space separated list of boolean flag names
+__flags_longNames=' '	# space separated list of long flag names
+__flags_shortNames=' '	# space separated list of short flag names
+__flags_columns=''		# screen width in columns
+__flags_opts=''			# temporary storage for parsed getopt flags
 
 #------------------------------------------------------------------------------
 # private functions
@@ -195,20 +194,20 @@ __flags_opts=''  # temporary storage for parsed getopt flags
 #
 # Calling this function will define the following info variables for the
 # specified flag:
-#   FLAGS_flagname - the name for this flag (based upon the long flag name)
-#   __flags_<flag_name>_default - the default value
-#   __flags_flagname_help - the help string
-#   __flags_flagname_short - the single letter alias
-#   __flags_flagname_type - the type of flag (one of __FLAGS_TYPE_*)
+#	 FLAGS_flagname - the name for this flag (based upon the long flag name)
+#	 __flags_<flag_name>_default - the default value
+#	 __flags_flagname_help - the help string
+#	 __flags_flagname_short - the single letter alias
+#	 __flags_flagname_type - the type of flag (one of __FLAGS_TYPE_*)
 #
 # Args:
-#   _flags__type: integer: internal type of flag (__FLAGS_TYPE_*)
-#   _flags__name: string: long flag name
-#   _flags__default: default flag value
-#   _flags__help: string: help string
-#   _flags__short: string: (optional) short flag name
+#	 _flags__type: integer: internal type of flag (__FLAGS_TYPE_*)
+#	 _flags__name: string: long flag name
+#	 _flags__default: default flag value
+#	 _flags__help: string: help string
+#	 _flags__short: string: (optional) short flag name
 # Returns:
-#   integer: success of operation, or error
+#	 integer: success of operation, or error
 _flags_define()
 {
   if [ $# -lt 4 ]; then
@@ -339,11 +338,11 @@ _flags_define()
 # options, using the current list of long options for reference.
 #
 # Args:
-#   _flags_optStr: integer: option string type (__FLAGS_OPTSTR_*)
+#	 _flags_optStr: integer: option string type (__FLAGS_OPTSTR_*)
 # Output:
-#   string: generated option string for getopt
+#	 string: generated option string for getopt
 # Returns:
-#   boolean: success of operation (always returns True)
+#	 boolean: success of operation (always returns True)
 _flags_genOptStr()
 {
   _flags_optStrType_=$1
@@ -382,12 +381,12 @@ _flags_genOptStr()
 # Returns flag details based on a flag name and flag info.
 #
 # Args:
-#   string: long flag name
-#   string: flag info (see the _flags_define function for valid info types)
+#	 string: long flag name
+#	 string: flag info (see the _flags_define function for valid info types)
 # Output:
-#   string: value of dereferenced flag variable
+#	 string: value of dereferenced flag variable
 # Returns:
-#   integer: one of FLAGS_{TRUE|FALSE|ERROR}
+#	 integer: one of FLAGS_{TRUE|FALSE|ERROR}
 _flags_getFlagInfo()
 {
   _flags_name_=$1
@@ -429,10 +428,10 @@ _flags_getFlagInfo()
 # ' foo bar abc ').
 #
 # Args:
-#   _flags__str: string: string to search for in a list of strings
-#   unnamed: list: list of strings
+#	 _flags__str: string: string to search for in a list of strings
+#	 unnamed: list: list of strings
 # Returns:
-#   boolean: true if item is in the list
+#	 boolean: true if item is in the list
 _flags_itemInList()
 {
   _flags_str_=$1
@@ -452,7 +451,7 @@ _flags_itemInList()
 # Returns the width of the current screen.
 #
 # Output:
-#   integer: width in columns of the current screen.
+#	 integer: width in columns of the current screen.
 _flags_columns()
 {
   if [ -z "${__flags_columns}" ]; then
@@ -474,30 +473,30 @@ _flags_columns()
 # Validate a boolean.
 #
 # Args:
-#   _flags__bool: boolean: value to validate
+#	 _flags__bool: boolean: value to validate
 # Returns:
-#   bool: true if the value is a valid boolean
+#	 bool: true if the value is a valid boolean
 _flags_validateBoolean()
 {
-  _flags_bool_=$1
+	_flags_bool_=$1
 
-  flags_return=${FLAGS_TRUE}
-  case "${_flags_bool_}" in
-    true|t|0) ;;
-    false|f|1) ;;
-    *) flags_return=${FLAGS_FALSE} ;;
-  esac
+	flags_return=${FLAGS_TRUE}
+	case "${_flags_bool_}" in
+		true|t|0) ;;
+		false|f|1) ;;
+		*) flags_return=${FLAGS_FALSE} ;;
+	esac
 
-  unset _flags_bool_
-  return ${flags_return}
+	unset _flags_bool_
+	return ${flags_return}
 }
 
 # Validate a float.
 #
 # Args:
-#   _flags__float: float: value to validate
+#	 _flags__float: float: value to validate
 # Returns:
-#   bool: true if the value is a valid float
+#	 bool: true if the value is a valid float
 _flags_validateFloat()
 {
   _flags_float_=$1
@@ -524,9 +523,9 @@ _flags_validateFloat()
 # Validate an integer.
 #
 # Args:
-#   _flags__integer: interger: value to validate
+#	 _flags__integer: interger: value to validate
 # Returns:
-#   bool: true if the value is a valid integer
+#	 bool: true if the value is a valid integer
 _flags_validateInteger()
 {
   _flags_int_=$1
@@ -552,9 +551,9 @@ _flags_validateInteger()
 # the formatting is not lost due to shell parsing and such.
 #
 # Args:
-#   @: varies: command-line options to parse
+#	 @: varies: command-line options to parse
 # Returns:
-#   integer: a FLAGS success condition
+#	 integer: a FLAGS success condition
 _flags_getoptStandard()
 {
   flags_return=${FLAGS_TRUE}
@@ -591,9 +590,9 @@ _flags_getoptStandard()
 # the formatting is not lost due to shell parsing and such.
 #
 # Args:
-#   @: varies: command-line options to parse
+#	 @: varies: command-line options to parse
 # Returns:
-#   integer: a FLAGS success condition
+#	 integer: a FLAGS success condition
 _flags_getoptEnhanced()
 {
   flags_return=${FLAGS_TRUE}
@@ -624,10 +623,10 @@ _flags_getoptEnhanced()
 # dynamic to support any number of flags.
 #
 # Args:
-#   argc: int: original command-line argument count
-#   @: varies: output from getopt parsing
+#	 argc: int: original command-line argument count
+#	 @: varies: output from getopt parsing
 # Returns:
-#   integer: a FLAGS success condition
+#	 integer: a FLAGS success condition
 _flags_parseGetopt()
 {
   _flags_argc_=$1
@@ -793,16 +792,16 @@ _flags_parseGetopt()
 DEFINE_boolean() { _flags_define ${__FLAGS_TYPE_BOOLEAN} "$@"; }
 
 # Other basic flags.
-DEFINE_float()   { _flags_define ${__FLAGS_TYPE_FLOAT} "$@"; }
+DEFINE_float() { _flags_define ${__FLAGS_TYPE_FLOAT} "$@"; }
 DEFINE_integer() { _flags_define ${__FLAGS_TYPE_INTEGER} "$@"; }
-DEFINE_string()  { _flags_define ${__FLAGS_TYPE_STRING} "$@"; }
+DEFINE_string() { _flags_define ${__FLAGS_TYPE_STRING} "$@"; }
 
 # Parse the flags.
 #
 # Args:
-#   unnamed: list: command-line flags to parse
+#	 unnamed: list: command-line flags to parse
 # Returns:
-#   integer: success of operation, or error
+#	 integer: success of operation, or error
 FLAGS()
 {
   # define a standard 'help' flag if one isn't already defined
@@ -837,11 +836,11 @@ FLAGS()
 # can be included in a bug report.
 #
 # Args:
-#   none
+#	 none
 # Output:
-#   debug info that can be included in a bug report
+#	 debug info that can be included in a bug report
 # Returns:
-#   nothing
+#	 nothing
 flags_getoptInfo()
 {
   # platform info
@@ -869,25 +868,25 @@ flags_getoptInfo()
 # Returns whether the detected getopt version is the enhanced version.
 #
 # Args:
-#   none
+#	 none
 # Output:
-#   none
+#	 none
 # Returns:
-#   bool: true if getopt is the enhanced version
+#	 bool: true if getopt is the enhanced version
 flags_getoptIsEnh()
 {
-  test ${__FLAGS_GETOPT_VERS} -eq ${__FLAGS_GETOPT_VERS_ENH}
+	test ${__FLAGS_GETOPT_VERS} -eq ${__FLAGS_GETOPT_VERS_ENH}
 }
 
 # Returns whether the detected getopt version is the standard version.
 #
 # Args:
-#   none
+#	 none
 # Returns:
-#   bool: true if getopt is the standard version
+#	 bool: true if getopt is the standard version
 flags_getoptIsStd()
 {
-  test ${__FLAGS_GETOPT_VERS} -eq ${__FLAGS_GETOPT_VERS_STD}
+	test ${__FLAGS_GETOPT_VERS} -eq ${__FLAGS_GETOPT_VERS_STD}
 }
 
 # This is effectively a 'usage()' function. It prints usage information and
@@ -896,9 +895,9 @@ flags_getoptIsStd()
 # their own --help flag, replacing this one, if they want.
 #
 # Args:
-#   none
+#	 none
 # Returns:
-#   integer: success of operation (always returns true)
+#	 integer: success of operation (always returns true)
 flags_help()
 {
   if [ -n "${FLAGS_HELP:-}" ]; then
@@ -981,29 +980,29 @@ flags_help()
 # Reset shflags back to an uninitialized state.
 #
 # Args:
-#   none
+#	 none
 # Returns:
-#   nothing
+#	 nothing
 flags_reset()
 {
-  for flags_name_ in ${__flags_longNames}; do
-    flags_strToEval_="unset FLAGS_${flags_name_}"
-    for flags_type_ in \
-        ${__FLAGS_INFO_DEFAULT} \
-        ${__FLAGS_INFO_HELP} \
-        ${__FLAGS_INFO_SHORT} \
-        ${__FLAGS_INFO_TYPE}
-    do
-      flags_strToEval_=\
+	for flags_name_ in ${__flags_longNames}; do
+		flags_strToEval_="unset FLAGS_${flags_name_}"
+		for flags_type_ in \
+			${__FLAGS_INFO_DEFAULT} \
+			${__FLAGS_INFO_HELP} \
+			${__FLAGS_INFO_SHORT} \
+			${__FLAGS_INFO_TYPE}
+		do
+			flags_strToEval_=\
 "${flags_strToEval_} __flags_${flags_name_}_${flags_type_}"
-    done
-    eval ${flags_strToEval_}
-  done
+		done
+		eval ${flags_strToEval_}
+	done
 
-  # reset internal variables
-  __flags_boolNames=' '
-  __flags_longNames=' '
-  __flags_shortNames=' '
+	# reset internal variables
+	__flags_boolNames=' '
+	__flags_longNames=' '
+	__flags_shortNames=' '
 
-  unset flags_name_ flags_type_ flags_strToEval_
+	unset flags_name_ flags_type_ flags_strToEval_
 }
