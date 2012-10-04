@@ -691,12 +691,12 @@ _flags_parseGetopt()
 				;;
 		esac
 
-    # die if the flag was unrecognized
-    if [ -z "${_flags_name_}" ]; then
-      flags_error="unrecognized option (${_flags_opt_})"
-      flags_return=${FLAGS_ERROR}
-      break
-    fi
+		# die if the flag was unrecognized
+		if [ -z "${_flags_name_}" ]; then
+			flags_error="unrecognized option (${_flags_opt_})"
+			flags_return=${FLAGS_ERROR}
+			break
+		fi
 
     # set new flag value
     [ ${_flags_type_} -eq ${__FLAGS_TYPE_NONE} ] && \
