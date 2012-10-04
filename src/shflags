@@ -902,81 +902,89 @@ flags_getoptIsStd()
 #	 integer: success of operation (always returns true)
 flags_help()
 {
-  if [ -n "${FLAGS_HELP:-}" ]; then
-    echo "${FLAGS_HELP}" >&2
-  else
-    echo "USAGE: ${FLAGS_PARENT:-$0} [flags] args" >&2
-  fi
-  if [ -n "${__flags_longNames}" ]; then
-    echo 'flags:' >&2
-    for flags_name_ in ${__flags_longNames}; do
-      flags_flagStr_=''
-      flags_boolStr_=''
+	if [ -n "${FLAGS_HELP:-}" ]; then
+		echo "${FLAGS_HELP}" >&2
+	else
+		echo "Usage:" >&2
+		echo "  ${FLAGS_PARENT:-$0} [options] <args>" >&2
+		echo '' >&2
+	fi
+	if [ -n "${__flags_longNames}" ]; then
+		echo 'Options:' >&2
+		for flags_name_ in ${__flags_longNames}; do
+			flags_flagStr_=''
+			flags_boolStr_=''
 
-      flags_default_=`_flags_getFlagInfo \
-          "${flags_name_}" ${__FLAGS_INFO_DEFAULT}`
-      flags_help_=`_flags_getFlagInfo \
-          "${flags_name_}" ${__FLAGS_INFO_HELP}`
-      flags_short_=`_flags_getFlagInfo \
-          "${flags_name_}" ${__FLAGS_INFO_SHORT}`
-      flags_type_=`_flags_getFlagInfo \
-          "${flags_name_}" ${__FLAGS_INFO_TYPE}`
+			flags_default_=`_flags_getFlagInfo \
+				"${flags_name_}" ${__FLAGS_INFO_DEFAULT}`
+			flags_help_=`_flags_getFlagInfo \
+				"${flags_name_}" ${__FLAGS_INFO_HELP}`
+			flags_short_=`_flags_getFlagInfo \
+				"${flags_name_}" ${__FLAGS_INFO_SHORT}`
+			flags_type_=`_flags_getFlagInfo \
+				"${flags_name_}" ${__FLAGS_INFO_TYPE}`
 
-      [ "${flags_short_}" != "${__FLAGS_NULL}" ] \
-          && flags_flagStr_="-${flags_short_}"
+			[ "${flags_short_}" != "${__FLAGS_NULL}" ] \
+				&& flags_flagStr_="-${flags_short_}"
 
-      if [ ${__FLAGS_GETOPT_VERS} -eq ${__FLAGS_GETOPT_VERS_ENH} ]; then
-        [ "${flags_short_}" != "${__FLAGS_NULL}" ] \
-            && flags_flagStr_="${flags_flagStr_},"
-        [ ${flags_type_} -eq ${__FLAGS_TYPE_BOOLEAN} ] \
-            && flags_boolStr_='[no]'
-        flags_flagStr_="${flags_flagStr_}--${flags_boolStr_}${flags_name_}:"
-      fi
+			if [ ${__FLAGS_GETOPT_VERS} -eq ${__FLAGS_GETOPT_VERS_ENH} ]; then
+				[ "${flags_short_}" != "${__FLAGS_NULL}" ] \
+					&& flags_flagStr_="${flags_flagStr_}, "
+				[ ${flags_type_} -eq ${__FLAGS_TYPE_BOOLEAN} ] \
+				#	&& flags_boolStr_='[no]'
+				flags_flagStr_="${flags_flagStr_}--${flags_boolStr_}${flags_name_}:"
+			fi
 
-      case ${flags_type_} in
-        ${__FLAGS_TYPE_BOOLEAN})
-          if [ ${flags_default_} -eq ${FLAGS_TRUE} ]; then
-            flags_defaultStr_='true'
-          else
-            flags_defaultStr_='false'
-          fi
-          ;;
-        ${__FLAGS_TYPE_FLOAT}|${__FLAGS_TYPE_INTEGER})
-          flags_defaultStr_=${flags_default_} ;;
-        ${__FLAGS_TYPE_STRING}) flags_defaultStr_="'${flags_default_}'" ;;
-      esac
-      flags_defaultStr_="(default: ${flags_defaultStr_})"
+			case ${flags_type_} in
+				${__FLAGS_TYPE_BOOLEAN})
+					if [ ${flags_default_} -eq ${FLAGS_TRUE} ]; then
+						flags_defaultStr_='true'
+					else
+						flags_defaultStr_='false'
+					fi
+					;;
+				${__FLAGS_TYPE_FLOAT}|${__FLAGS_TYPE_INTEGER})
+					flags_defaultStr_=${flags_default_} ;;
+				${__FLAGS_TYPE_STRING}) flags_defaultStr_="'${flags_default_}'" ;;
+			esac
+			
+			# hide showing the default for boolean flags
+			if [ ${flags_type_} != ${__FLAGS_TYPE_BOOLEAN} ]; then
+				flags_defaultStr_="(default: ${flags_defaultStr_})"
+			else
+				flags_defaultStr_=''
+			fi
+			
+			flags_helpStr_="  ${flags_flagStr_} ${flags_help_} ${flags_defaultStr_}"
+			flags_helpStrLen_=`expr "${flags_helpStr_}" : '.*'`
+			flags_columns_=`_flags_columns`
+			if [ ${flags_helpStrLen_} -lt ${flags_columns_} ]; then
+				echo "${flags_helpStr_}" >&2
+			else
+				echo "  ${flags_flagStr_} ${flags_help_}" >&2
+				# note: the silliness with the x's is purely for ksh93 on Ubuntu 6.06
+				# because it doesn't like empty strings when used in this manner.
+				flags_emptyStr_="`echo \"x${flags_flagStr_}x\" \
+					|awk '{printf "%"length($0)-2"s", ""}'`"
+				flags_helpStr_="${flags_emptyStr_} ${flags_defaultStr_}"
+				flags_helpStrLen_=`expr "${flags_helpStr_}" : '.*'`
+				if [ ${__FLAGS_GETOPT_VERS} -eq ${__FLAGS_GETOPT_VERS_STD} \
+					-o ${flags_helpStrLen_} -lt ${flags_columns_} ]; then
+					# indented to match help string
+					echo "  ${flags_helpStr_}" >&2
+				else
+					# indented four from left to allow for longer defaults as
+					# long flagnames might be used too, making things too long
+					echo "    ${flags_defaultStr_}" >&2
+				fi
+			fi
+		done
+	fi
 
-      flags_helpStr_="  ${flags_flagStr_}  ${flags_help_} ${flags_defaultStr_}"
-      flags_helpStrLen_=`expr "${flags_helpStr_}" : '.*'`
-      flags_columns_=`_flags_columns`
-      if [ ${flags_helpStrLen_} -lt ${flags_columns_} ]; then
-        echo "${flags_helpStr_}" >&2
-      else
-        echo "  ${flags_flagStr_}  ${flags_help_}" >&2
-        # note: the silliness with the x's is purely for ksh93 on Ubuntu 6.06
-        # because it doesn't like empty strings when used in this manner.
-        flags_emptyStr_="`echo \"x${flags_flagStr_}x\" \
-            |awk '{printf "%"length($0)-2"s", ""}'`"
-        flags_helpStr_="  ${flags_emptyStr_}  ${flags_defaultStr_}"
-        flags_helpStrLen_=`expr "${flags_helpStr_}" : '.*'`
-        if [ ${__FLAGS_GETOPT_VERS} -eq ${__FLAGS_GETOPT_VERS_STD} \
-            -o ${flags_helpStrLen_} -lt ${flags_columns_} ]; then
-          # indented to match help string
-          echo "${flags_helpStr_}" >&2
-        else
-          # indented four from left to allow for longer defaults as long flag
-          # names might be used too, making things too long
-          echo "    ${flags_defaultStr_}" >&2
-        fi
-      fi
-    done
-  fi
-
-  unset flags_boolStr_ flags_default_ flags_defaultStr_ flags_emptyStr_ \
-      flags_flagStr_ flags_help_ flags_helpStr flags_helpStrLen flags_name_ \
-      flags_columns_ flags_short_ flags_type_
-  return ${FLAGS_TRUE}
+	unset flags_boolStr_ flags_default_ flags_defaultStr_ flags_emptyStr_ \
+		flags_flagStr_ flags_help_ flags_helpStr flags_helpStrLen flags_name_ \
+		flags_columns_ flags_short_ flags_type_
+	return ${FLAGS_TRUE}
 }
 
 # Reset shflags back to an uninitialized state.
