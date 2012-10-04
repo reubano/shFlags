@@ -722,15 +722,15 @@ _flags_parseGetopt()
 				fi
 				;;
 
-      ${__FLAGS_TYPE_FLOAT})
-        if _flags_validateFloat "${_flags_arg_}"; then
-          eval "FLAGS_${_flags_name_}='${_flags_arg_}'"
-        else
-          flags_error="invalid float value (${_flags_arg_})"
-          flags_return=${FLAGS_ERROR}
-          break
-        fi
-        ;;
+			${__FLAGS_TYPE_FLOAT})
+				if _flags_validateFloat "${_flags_arg_}"; then
+					eval "FLAGS_${_flags_name_}='${_flags_arg_}'"
+				else
+					flags_error="invalid float value (${_flags_arg_})"
+					flags_return=${FLAGS_ERROR}
+					break
+				fi
+				;;
 
       ${__FLAGS_TYPE_INTEGER})
         if _flags_validateInteger "${_flags_arg_}"; then
