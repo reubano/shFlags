@@ -698,29 +698,29 @@ _flags_parseGetopt()
 			break
 		fi
 
-    # set new flag value
-    [ ${_flags_type_} -eq ${__FLAGS_TYPE_NONE} ] && \
-        _flags_type_=`_flags_getFlagInfo \
-            "${_flags_name_}" ${__FLAGS_INFO_TYPE}`
-    case ${_flags_type_} in
-      ${__FLAGS_TYPE_BOOLEAN})
-        if [ ${_flags_len_} -eq ${__FLAGS_LEN_LONG} ]; then
-          if [ "${_flags_arg_}" != "${__FLAGS_NULL}" ]; then
-            eval "FLAGS_${_flags_name_}=${FLAGS_TRUE}"
-          else
-            eval "FLAGS_${_flags_name_}=${FLAGS_FALSE}"
-          fi
-        else
-          _flags_strToEval_="_flags_val_=\
-\${__flags_${_flags_name_}_${__FLAGS_INFO_DEFAULT}}"
-          eval "${_flags_strToEval_}"
-          if [ ${_flags_val_} -eq ${FLAGS_FALSE} ]; then
-            eval "FLAGS_${_flags_name_}=${FLAGS_TRUE}"
-          else
-            eval "FLAGS_${_flags_name_}=${FLAGS_FALSE}"
-          fi
-        fi
-        ;;
+		# set new flag value
+		[ ${_flags_type_} -eq ${__FLAGS_TYPE_NONE} ] && \
+			_flags_type_=`_flags_getFlagInfo \
+					"${_flags_name_}" ${__FLAGS_INFO_TYPE}`
+		case ${_flags_type_} in
+			${__FLAGS_TYPE_BOOLEAN})
+				if [ ${_flags_len_} -eq ${__FLAGS_LEN_LONG} ]; then
+					if [ "${_flags_arg_}" != "${__FLAGS_NULL}" ]; then
+						eval "FLAGS_${_flags_name_}=${FLAGS_TRUE}"
+					else
+						eval "FLAGS_${_flags_name_}=${FLAGS_FALSE}"
+					fi
+				else
+					_flags_strToEval_="_flags_val_=\
+						\${__flags_${_flags_name_}_${__FLAGS_INFO_DEFAULT}}"
+					eval "${_flags_strToEval_}"
+					if [ ${_flags_val_} -eq ${FLAGS_FALSE} ]; then
+						eval "FLAGS_${_flags_name_}=${FLAGS_TRUE}"
+					else
+						eval "FLAGS_${_flags_name_}=${FLAGS_FALSE}"
+					fi
+				fi
+				;;
 
       ${__FLAGS_TYPE_FLOAT})
         if _flags_validateFloat "${_flags_arg_}"; then
