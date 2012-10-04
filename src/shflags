@@ -732,46 +732,46 @@ _flags_parseGetopt()
 				fi
 				;;
 
-      ${__FLAGS_TYPE_INTEGER})
-        if _flags_validateInteger "${_flags_arg_}"; then
-          eval "FLAGS_${_flags_name_}='${_flags_arg_}'"
-        else
-          flags_error="invalid integer value (${_flags_arg_})"
-          flags_return=${FLAGS_ERROR}
-          break
-        fi
-        ;;
+			${__FLAGS_TYPE_INTEGER})
+				if _flags_validateInteger "${_flags_arg_}"; then
+					eval "FLAGS_${_flags_name_}='${_flags_arg_}'"
+				else
+					flags_error="invalid integer value (${_flags_arg_})"
+					flags_return=${FLAGS_ERROR}
+					break
+				fi
+				;;
 
-      ${__FLAGS_TYPE_STRING})
-        eval "FLAGS_${_flags_name_}='${_flags_arg_}'"
-        ;;
-    esac
+			${__FLAGS_TYPE_STRING})
+				eval "FLAGS_${_flags_name_}='${_flags_arg_}'"
+				;;
+		esac
 
-    # handle special case help flag
-    if [ "${_flags_name_}" = 'help' ]; then
-      if [ ${FLAGS_help} -eq ${FLAGS_TRUE} ]; then
-        flags_help
-        flags_error='help requested'
-        flags_return=${FLAGS_FALSE}
-        break
-      fi
-    fi
+		# handle special case help flag
+		if [ "${_flags_name_}" = 'help' ]; then
+			if [ ${FLAGS_help} -eq ${FLAGS_TRUE} ]; then
+				flags_help
+				flags_error='help requested'
+				flags_return=${FLAGS_FALSE}
+				break
+			fi
+		fi
 
-    # shift the option and non-boolean arguements out.
-    shift
-    [ ${_flags_type_} != ${__FLAGS_TYPE_BOOLEAN} ] && shift
-  done
+		# shift the option and non-boolean arguements out.
+		shift
+		[ ${_flags_type_} != ${__FLAGS_TYPE_BOOLEAN} ] && shift
+	done
 
-  # give user back non-flag arguments
-  FLAGS_ARGV=''
-  while [ $# -gt 0 ]; do
-    FLAGS_ARGV="${FLAGS_ARGV:+${FLAGS_ARGV} }'$1'"
-    shift
-  done
+	# give user back non-flag arguments
+	FLAGS_ARGV=''
+	while [ $# -gt 0 ]; do
+		FLAGS_ARGV="${FLAGS_ARGV:+${FLAGS_ARGV} }'$1'"
+		shift
+	done
 
-  unset _flags_arg_ _flags_len_ _flags_name_ _flags_opt_ _flags_pos_ \
-      _flags_strToEval_ _flags_type_ _flags_val_
-  return ${flags_return}
+	unset _flags_arg_ _flags_len_ _flags_name_ _flags_opt_ _flags_pos_ \
+		_flags_strToEval_ _flags_type_ _flags_val_
+	return ${flags_return}
 }
 
 #------------------------------------------------------------------------------
