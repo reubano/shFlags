@@ -95,16 +95,16 @@ _flags_fatal() { echo "flags:FATAL $@" >&2; }
 
 # specific shell checks
 if [ -n "${ZSH_VERSION:-}" ]; then
-  setopt |grep "^shwordsplit$" >/dev/null
-  if [ $? -ne ${FLAGS_TRUE} ]; then
-    _flags_fatal 'zsh shwordsplit option is required for proper zsh operation'
-    exit ${FLAGS_ERROR}
-  fi
-  if [ -z "${FLAGS_PARENT:-}" ]; then
-    _flags_fatal "zsh does not pass \$0 through properly. please declare' \
+	setopt |grep "^shwordsplit$" >/dev/null
+	if [ $? -ne ${FLAGS_TRUE} ]; then
+		_flags_fatal 'zsh shwordsplit option is required for proper zsh operation'
+		exit ${FLAGS_ERROR}
+	fi
+	if [ -z "${FLAGS_PARENT:-}" ]; then
+		_flags_fatal "zsh does not pass \$0 through properly. please declare' \
 \"FLAGS_PARENT=\$0\" before calling shFlags"
-    exit ${FLAGS_ERROR}
-  fi
+		exit ${FLAGS_ERROR}
+	fi
 fi
 
 #
@@ -118,19 +118,19 @@ __FLAGS_GETOPT_VERS_BSD=2
 
 getopt >/dev/null 2>&1
 case $? in
-  0) __FLAGS_GETOPT_VERS=${__FLAGS_GETOPT_VERS_STD} ;;  # bsd getopt
-  2)
-    # TODO(kward): look into '-T' option to test the internal getopt() version
-    if [ "`getopt --version`" = '-- ' ]; then
-      __FLAGS_GETOPT_VERS=${__FLAGS_GETOPT_VERS_STD}
-    else
-      __FLAGS_GETOPT_VERS=${__FLAGS_GETOPT_VERS_ENH}
-    fi
-    ;;
-  *)
-    _flags_fatal 'unable to determine getopt version'
-    exit ${FLAGS_ERROR}
-    ;;
+	0) __FLAGS_GETOPT_VERS=${__FLAGS_GETOPT_VERS_STD} ;; # bsd getopt
+	2)
+		# TODO(kward): look into '-T' option to test the internal getopt() version
+		if [ "`getopt --version`" = '-- ' ]; then
+			__FLAGS_GETOPT_VERS=${__FLAGS_GETOPT_VERS_STD}
+		else
+			__FLAGS_GETOPT_VERS=${__FLAGS_GETOPT_VERS_ENH}
+		fi
+		;;
+	*)
+		_flags_fatal 'unable to determine getopt version'
+		exit ${FLAGS_ERROR}
+		;;
 esac
 
 # getopt optstring lengths
@@ -159,20 +159,22 @@ __FLAGS_TYPE_STRING=4
 # set the constants readonly
 __flags_constants=`set |awk -F= '/^FLAGS_/ || /^__FLAGS_/ {print $1}'`
 for __flags_const in ${__flags_constants}; do
-  # skip certain flags
-  case ${__flags_const} in
-    FLAGS_HELP) continue ;;
-    FLAGS_PARENT) continue ;;
-  esac
-  # set flag readonly
-  if [ -z "${ZSH_VERSION:-}" ]; then
-    readonly ${__flags_const}
-  else  # handle zsh
-    case ${ZSH_VERSION} in
-      [123].*) readonly ${__flags_const} ;;
-      *) readonly -g ${__flags_const} ;;  # declare readonly constants globally
-    esac
-  fi
+	# skip certain flags
+	case ${__flags_const} in
+		FLAGS_HELP) continue ;;
+		FLAGS_PARENT) continue ;;
+	esac
+	# set flag readonly
+	if [ -z "${ZSH_VERSION:-}" ]; then
+		readonly ${__flags_const}
+	else # handle zsh
+		case ${ZSH_VERSION} in
+			[123].*) readonly ${__flags_const} ;;
+			
+			# declare readonly constants globally
+			*) readonly -g ${__flags_const} ;;
+		esac
+	fi
 done
 unset __flags_const __flags_constants
 
@@ -389,38 +391,38 @@ _flags_genOptStr()
 #	 integer: one of FLAGS_{TRUE|FALSE|ERROR}
 _flags_getFlagInfo()
 {
-  _flags_name_=$1
-  _flags_info_=$2
+	_flags_name_=$1
+	_flags_info_=$2
 
-  _flags_nameVar_="__flags_${_flags_name_}_${_flags_info_}"
-  _flags_strToEval_="_flags_value_=\"\${${_flags_nameVar_}:-}\""
-  eval "${_flags_strToEval_}"
-  if [ -n "${_flags_value_}" ]; then
-    flags_return=${FLAGS_TRUE}
-  else
-    # see if the _flags_name_ variable is a string as strings can be empty...
-    # note: the DRY principle would say to have this function call itself for
-    # the next three lines, but doing so results in an infinite loop as an
-    # invalid _flags_name_ will also not have the associated _type variable.
-    # Because it doesn't (it will evaluate to an empty string) the logic will
-    # try to find the _type variable of the _type variable, and so on. Not so
-    # good ;-)
-    _flags_typeVar_="__flags_${_flags_name_}_${__FLAGS_INFO_TYPE}"
-    _flags_strToEval_="_flags_type_=\"\${${_flags_typeVar_}:-}\""
-    eval "${_flags_strToEval_}"
-    if [ "${_flags_type_}" = "${__FLAGS_TYPE_STRING}" ]; then
-      flags_return=${FLAGS_TRUE}
-    else
-      flags_return=${FLAGS_ERROR}
-      flags_error="invalid flag name (${_flags_nameVar_})"
-    fi
-  fi
+	_flags_nameVar_="__flags_${_flags_name_}_${_flags_info_}"
+	_flags_strToEval_="_flags_value_=\"\${${_flags_nameVar_}:-}\""
+	eval "${_flags_strToEval_}"
+	if [ -n "${_flags_value_}" ]; then
+		flags_return=${FLAGS_TRUE}
+	else
+		# see if the _flags_name_ variable is a string as strings can be empty...
+		# note: the DRY principle would say to have this function call itself for
+		# the next three lines, but doing so results in an infinite loop as an
+		# invalid _flags_name_ will also not have the associated _type variable.
+		# Because it doesn't (it will evaluate to an empty string) the logic will
+		# try to find the _type variable of the _type variable, and so on. Not so
+		# good ;-)
+		_flags_typeVar_="__flags_${_flags_name_}_${__FLAGS_INFO_TYPE}"
+		_flags_strToEval_="_flags_type_=\"\${${_flags_typeVar_}:-}\""
+		eval "${_flags_strToEval_}"
+		if [ "${_flags_type_}" = "${__FLAGS_TYPE_STRING}" ]; then
+			flags_return=${FLAGS_TRUE}
+		else
+			flags_return=${FLAGS_ERROR}
+			flags_error="invalid flag name (${_flags_nameVar_})"
+		fi
+	fi
 
-  echo "${_flags_value_}"
-  unset _flags_info_ _flags_name_ _flags_strToEval_ _flags_type_ _flags_value_ \
-      _flags_nameVar_ _flags_typeVar_
-  [ ${flags_return} -eq ${FLAGS_ERROR} ] && _flags_error "${flags_error}"
-  return ${flags_return}
+	echo "${_flags_value_}"
+	unset _flags_info_ _flags_name_ _flags_strToEval_ _flags_type_ _flags_value_ \
+		_flags_nameVar_ _flags_typeVar_
+	[ ${flags_return} -eq ${FLAGS_ERROR} ] && _flags_error "${flags_error}"
+	return ${flags_return}
 }
 
 # check for presense of item in a list. passed a string (e.g. 'abc'), this
@@ -434,18 +436,18 @@ _flags_getFlagInfo()
 #	 boolean: true if item is in the list
 _flags_itemInList()
 {
-  _flags_str_=$1
-  shift
+	_flags_str_=$1
+	shift
 
-  echo " ${*:-} " |grep " ${_flags_str_} " >/dev/null
-  if [ $? -eq 0 ]; then
-    flags_return=${FLAGS_TRUE}
-  else
-    flags_return=${FLAGS_FALSE}
-  fi
+	echo " ${*:-} " |grep " ${_flags_str_} " >/dev/null
+	if [ $? -eq 0 ]; then
+		flags_return=${FLAGS_TRUE}
+	else
+		flags_return=${FLAGS_FALSE}
+	fi
 
-  unset _flags_str_
-  return ${flags_return}
+	unset _flags_str_
+	return ${flags_return}
 }
 
 # Returns the width of the current screen.
@@ -454,20 +456,20 @@ _flags_itemInList()
 #	 integer: width in columns of the current screen.
 _flags_columns()
 {
-  if [ -z "${__flags_columns}" ]; then
-    # determine the value and store it
-    if eval stty size >/dev/null 2>&1; then
-      # stty size worked :-)
-      set -- `stty size`
-      __flags_columns=$2
-    elif eval tput cols >/dev/null 2>&1; then
-      set -- `tput cols`
-      __flags_columns=$1
-    else
-      __flags_columns=80  # default terminal width
-    fi
-  fi
-  echo ${__flags_columns}
+	if [ -z "${__flags_columns}" ]; then
+		# determine the value and store it
+		if eval stty size >/dev/null 2>&1; then
+			# stty size worked :-)
+			set -- `stty size`
+			__flags_columns=$2
+		elif eval tput cols >/dev/null 2>&1; then
+			set -- `tput cols`
+			__flags_columns=$1
+		else
+			__flags_columns=80 # default terminal width
+		fi
+	fi
+	echo ${__flags_columns}
 }
 
 # Validate a boolean.
@@ -499,25 +501,25 @@ _flags_validateBoolean()
 #	 bool: true if the value is a valid float
 _flags_validateFloat()
 {
-  _flags_float_=$1
+	_flags_float_=$1
 
-  if _flags_validateInteger ${_flags_float_}; then
-    flags_return=${FLAGS_TRUE}
-  else
-    flags_return=${FLAGS_TRUE}
-    case ${_flags_float_} in
-      -*)  # negative floats
-        _flags_test_=`expr "${_flags_float_}" : '\(-[0-9][0-9]*\.[0-9][0-9]*\)'`
-        ;;
-      *)  # positive floats
-        _flags_test_=`expr "${_flags_float_}" : '\([0-9][0-9]*\.[0-9][0-9]*\)'`
-        ;;
-    esac
-    [ "${_flags_test_}" != "${_flags_float_}" ] && flags_return=${FLAGS_FALSE}
-  fi
+	if _flags_validateInteger ${_flags_float_}; then
+		flags_return=${FLAGS_TRUE}
+	else
+		flags_return=${FLAGS_TRUE}
+		case ${_flags_float_} in
+			-*)	# negative floats
+				_flags_test_=`expr "${_flags_float_}" : '\(-[0-9][0-9]*\.[0-9][0-9]*\)'`
+				;;
+			*) # positive floats
+				_flags_test_=`expr "${_flags_float_}" : '\([0-9][0-9]*\.[0-9][0-9]*\)'`
+				;;
+		esac
+		[ "${_flags_test_}" != "${_flags_float_}" ] && flags_return=${FLAGS_FALSE}
+	fi
 
-  unset _flags_float_ _flags_test_
-  return ${flags_return}
+	unset _flags_float_ _flags_test_
+	return ${flags_return}
 }
 
 # Validate an integer.
@@ -528,21 +530,21 @@ _flags_validateFloat()
 #	 bool: true if the value is a valid integer
 _flags_validateInteger()
 {
-  _flags_int_=$1
+	_flags_int_=$1
 
-  flags_return=${FLAGS_TRUE}
-  case ${_flags_int_} in
-    -*)  # negative ints
-      _flags_test_=`expr "${_flags_int_}" : '\(-[0-9][0-9]*\)'`
-      ;;
-    *)  # positive ints
-      _flags_test_=`expr "${_flags_int_}" : '\([0-9][0-9]*\)'`
-      ;;
-  esac
-  [ "${_flags_test_}" != "${_flags_int_}" ] && flags_return=${FLAGS_FALSE}
+	flags_return=${FLAGS_TRUE}
+	case ${_flags_int_} in
+		-*) # negative ints
+			_flags_test_=`expr "${_flags_int_}" : '\(-[0-9][0-9]*\)'`
+			;;
+		*) # positive ints
+			_flags_test_=`expr "${_flags_int_}" : '\([0-9][0-9]*\)'`
+			;;
+	esac
+	[ "${_flags_test_}" != "${_flags_int_}" ] && flags_return=${FLAGS_FALSE}
 
-  unset _flags_int_ _flags_test_
-  return ${flags_return}
+	unset _flags_int_ _flags_test_
+	return ${flags_return}
 }
 
 # Parse command-line options using the standard getopt.
@@ -556,32 +558,32 @@ _flags_validateInteger()
 #	 integer: a FLAGS success condition
 _flags_getoptStandard()
 {
-  flags_return=${FLAGS_TRUE}
-  _flags_shortOpts_=`_flags_genOptStr ${__FLAGS_OPTSTR_SHORT}`
+	flags_return=${FLAGS_TRUE}
+	_flags_shortOpts_=`_flags_genOptStr ${__FLAGS_OPTSTR_SHORT}`
 
-  # check for spaces in passed options
-  for _flags_opt_ in "$@"; do
-    # note: the silliness with the x's is purely for ksh93 on Ubuntu 6.06
-    _flags_match_=`echo "x${_flags_opt_}x" |sed 's/ //g'`
-    if [ "${_flags_match_}" != "x${_flags_opt_}x" ]; then
-      flags_error='the available getopt does not support spaces in options'
-      flags_return=${FLAGS_ERROR}
-      break
-    fi
-  done
+	# check for spaces in passed options
+	for _flags_opt_ in "$@"; do
+		# note: the silliness with the x's is purely for ksh93 on Ubuntu 6.06
+		_flags_match_=`echo "x${_flags_opt_}x" |sed 's/ //g'`
+		if [ "${_flags_match_}" != "x${_flags_opt_}x" ]; then
+			flags_error='the available getopt does not support spaces in options'
+			flags_return=${FLAGS_ERROR}
+			break
+		fi
+	done
 
-  if [ ${flags_return} -eq ${FLAGS_TRUE} ]; then
-    __flags_opts=`getopt ${_flags_shortOpts_} $@ 2>&1`
-    _flags_rtrn_=$?
-    if [ ${_flags_rtrn_} -ne ${FLAGS_TRUE} ]; then
-      _flags_warn "${__flags_opts}"
-      flags_error='unable to parse provided options with getopt.'
-      flags_return=${FLAGS_ERROR}
-    fi
-  fi
+	if [ ${flags_return} -eq ${FLAGS_TRUE} ]; then
+		__flags_opts=`getopt ${_flags_shortOpts_} $@ 2>&1`
+		_flags_rtrn_=$?
+		if [ ${_flags_rtrn_} -ne ${FLAGS_TRUE} ]; then
+			_flags_warn "${__flags_opts}"
+			flags_error='unable to parse provided options with getopt.'
+			flags_return=${FLAGS_ERROR}
+		fi
+	fi
 
-  unset _flags_match_ _flags_opt_ _flags_rtrn_ _flags_shortOpts_
-  return ${flags_return}
+	unset _flags_match_ _flags_opt_ _flags_rtrn_ _flags_shortOpts_
+	return ${flags_return}
 }
 
 # Parse command-line options using the enhanced getopt.
@@ -595,25 +597,25 @@ _flags_getoptStandard()
 #	 integer: a FLAGS success condition
 _flags_getoptEnhanced()
 {
-  flags_return=${FLAGS_TRUE}
-  _flags_shortOpts_=`_flags_genOptStr ${__FLAGS_OPTSTR_SHORT}`
-  _flags_boolOpts_=`echo "${__flags_boolNames}" \
-      |sed 's/^ *//;s/ *$//;s/ /,/g'`
-  _flags_longOpts_=`_flags_genOptStr ${__FLAGS_OPTSTR_LONG}`
+	flags_return=${FLAGS_TRUE}
+	_flags_shortOpts_=`_flags_genOptStr ${__FLAGS_OPTSTR_SHORT}`
+	_flags_boolOpts_=`echo "${__flags_boolNames}" \
+		|sed 's/^ *//;s/ *$//;s/ /,/g'`
+	_flags_longOpts_=`_flags_genOptStr ${__FLAGS_OPTSTR_LONG}`
 
-  __flags_opts=`getopt \
-      -o ${_flags_shortOpts_} \
-      -l "${_flags_longOpts_},${_flags_boolOpts_}" \
-      -- "$@" 2>&1`
-  _flags_rtrn_=$?
-  if [ ${_flags_rtrn_} -ne ${FLAGS_TRUE} ]; then
-    _flags_warn "${__flags_opts}"
-    flags_error='unable to parse provided options with getopt.'
-    flags_return=${FLAGS_ERROR}
-  fi
+	__flags_opts=`getopt \
+		-o ${_flags_shortOpts_} \
+		-l "${_flags_longOpts_},${_flags_boolOpts_}" \
+		-- "$@" 2>&1`
+	_flags_rtrn_=$?
+	if [ ${_flags_rtrn_} -ne ${FLAGS_TRUE} ]; then
+		_flags_warn "${__flags_opts}"
+		flags_error='unable to parse provided options with getopt.'
+		flags_return=${FLAGS_ERROR}
+	fi
 
-  unset _flags_boolOpts_ _flags_longOpts_ _flags_rtrn_ _flags_shortOpts_
-  return ${flags_return}
+	unset _flags_boolOpts_ _flags_longOpts_ _flags_rtrn_ _flags_shortOpts_
+	return ${flags_return}
 }
 
 # Dynamically parse a getopt result and set appropriate variables.
@@ -804,31 +806,31 @@ DEFINE_string() { _flags_define ${__FLAGS_TYPE_STRING} "$@"; }
 #	 integer: success of operation, or error
 FLAGS()
 {
-  # define a standard 'help' flag if one isn't already defined
-  [ -z "${__flags_help_type:-}" ] && \
-      DEFINE_boolean 'help' false 'show this help' 'h'
+	# define a standard 'help' flag if one isn't already defined
+	[ -z "${__flags_help_type:-}" ] && \
+		DEFINE_boolean 'help' false 'show this help' 'h'
 
-  # parse options
-  if [ $# -gt 0 ]; then
-    if [ ${__FLAGS_GETOPT_VERS} -ne ${__FLAGS_GETOPT_VERS_ENH} ]; then
-      _flags_getoptStandard "$@"
-    else
-      _flags_getoptEnhanced "$@"
-    fi
-    flags_return=$?
-  else
-    # nothing passed; won't bother running getopt
-    __flags_opts='--'
-    flags_return=${FLAGS_TRUE}
-  fi
+	# parse options
+	if [ $# -gt 0 ]; then
+		if [ ${__FLAGS_GETOPT_VERS} -ne ${__FLAGS_GETOPT_VERS_ENH} ]; then
+			_flags_getoptStandard "$@"
+		else
+			_flags_getoptEnhanced "$@"
+		fi
+		flags_return=$?
+	else
+		# nothing passed; won't bother running getopt
+		__flags_opts='--'
+		flags_return=${FLAGS_TRUE}
+	fi
 
-  if [ ${flags_return} -eq ${FLAGS_TRUE} ]; then
-    _flags_parseGetopt $# "${__flags_opts}"
-    flags_return=$?
-  fi
+	if [ ${flags_return} -eq ${FLAGS_TRUE} ]; then
+		_flags_parseGetopt $# "${__flags_opts}"
+		flags_return=$?
+	fi
 
-  [ ${flags_return} -eq ${FLAGS_ERROR} ] && _flags_fatal "${flags_error}"
-  return ${flags_return}
+	[ ${flags_return} -eq ${FLAGS_ERROR} ] && _flags_fatal "${flags_error}"
+	return ${flags_return}
 }
 
 # This is a helper function for determining the `getopt` version for platforms
@@ -843,26 +845,26 @@ FLAGS()
 #	 nothing
 flags_getoptInfo()
 {
-  # platform info
-  _flags_debug "uname -a: `uname -a`"
-  _flags_debug "PATH: ${PATH}"
+	# platform info
+	_flags_debug "uname -a: `uname -a`"
+	_flags_debug "PATH: ${PATH}"
 
-  # shell info
-  if [ -n "${BASH_VERSION:-}" ]; then
-    _flags_debug 'shell: bash'
-    _flags_debug "BASH_VERSION: ${BASH_VERSION}"
-  elif [ -n "${ZSH_VERSION:-}" ]; then
-    _flags_debug 'shell: zsh'
-    _flags_debug "ZSH_VERSION: ${ZSH_VERSION}"
-  fi
+	# shell info
+	if [ -n "${BASH_VERSION:-}" ]; then
+		_flags_debug 'shell: bash'
+		_flags_debug "BASH_VERSION: ${BASH_VERSION}"
+	elif [ -n "${ZSH_VERSION:-}" ]; then
+		_flags_debug 'shell: zsh'
+		_flags_debug "ZSH_VERSION: ${ZSH_VERSION}"
+	fi
 
-  # getopt info
-  getopt >/dev/null
-  _flags_getoptReturn=$?
-  _flags_debug "getopt return: ${_flags_getoptReturn}"
-  _flags_debug "getopt --version: `getopt --version 2>&1`"
+	# getopt info
+	getopt >/dev/null
+	_flags_getoptReturn=$?
+	_flags_debug "getopt return: ${_flags_getoptReturn}"
+	_flags_debug "getopt --version: `getopt --version 2>&1`"
 
-  unset _flags_getoptReturn
+	unset _flags_getoptReturn
 }
 
 # Returns whether the detected getopt version is the enhanced version.
